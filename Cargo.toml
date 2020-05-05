@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "clu",
+    "stm32f4xx"
+]
