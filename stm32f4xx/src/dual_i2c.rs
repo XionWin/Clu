@@ -14,9 +14,15 @@ pub fn run() -> ! {
 
     let gpioa = dp.GPIOA.split();
     let gpioc = dp.GPIOC.split();
-    let scl = gpioa.pa8.into_alternate_af4().set_open_drain();
-    let sda = gpioc.pc9.into_alternate_af4().set_open_drain();
-    let mut i2c = I2c::i2c3(dp.I2C3, (scl, sda), 400.khz(), clocks);
+    let gpiof = dp.GPIOF.split();
+ 
+    let scl_2 = gpiof.pf1.into_alternate_af4().set_open_drain();
+    let sda_2 = gpiof.pf0.into_alternate_af4().set_open_drain();
+    let mut i2c_2 = I2c::i2c2(dp.I2C2, (scl_2, sda_2), 400.khz(), clocks);
+
+    let scl_3 = gpioa.pa8.into_alternate_af4().set_open_drain();
+    let sda_3 = gpioc.pc9.into_alternate_af4().set_open_drain();
+    let mut i2c_3 = I2c::i2c3(dp.I2C3, (scl_3, sda_3), 400.khz(), clocks);
 
     // Create a delay abstraction based on SysTick
     let mut delay = hal::delay::Delay::new(cp.SYST, clocks);
@@ -39,7 +45,14 @@ pub fn run() -> ! {
         // i2c.read(0x68, &mut msg_received) .unwrap();
 
         for _ in 0..10000 {
-            i2c.write_read(0x68, &[0x75], &mut msg_received).unwrap();
+            i2c_2.write_read(0x68, &[0x75], &mut msg_received).unwrap();
+            if msg_received[0] != 0x70 {
+                flag = false;
+            }
+        }
+
+        for _ in 0..10000 {
+            i2c_3.write_read(0x68, &[0x75], &mut msg_received).unwrap();
             if msg_received[0] != 0x70 {
                 flag = false;
             }
