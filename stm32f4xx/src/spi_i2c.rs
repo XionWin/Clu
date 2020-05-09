@@ -1,4 +1,5 @@
 use hal::{
+    i2c::I2c,
     prelude::*,
     spi::{Mode, Phase, Polarity, Spi},
     stm32,
@@ -11,6 +12,7 @@ pub fn run() -> ! {
     let rcc = dp.RCC.constrain();
     let gpioc = dp.GPIOC.split();
     let gpiog = dp.GPIOG.split();
+    let gpiof = dp.GPIOF.split();
 
     let clocks = rcc
         .cfgr
@@ -34,6 +36,16 @@ pub fn run() -> ! {
         clocks,
     );
 
+    let mut i2c_2 = I2c::i2c2(
+        dp.I2C2,
+        (
+            gpiof.pf1.into_alternate_af4().set_open_drain(),
+            gpiof.pf0.into_alternate_af4().set_open_drain(),
+        ),
+        400.khz(),
+        clocks,
+    );
+
     // Create a delay abstraction based on SysTick
     let mut delay = hal::delay::Delay::new(cp.SYST, clocks);
 
@@ -45,41 +57,42 @@ pub fn run() -> ! {
 
     // Create an `u8` array, which can be transfered via SPI.
     let mut msg_send: [u8; 2] = [0x0; 2];
-    let mut msg_received: [u8; 2] = [0x0; 2];
+    let mut spi_received: [u8; 2] = [0x0; 2];
+    let mut i2c_received: [u8; 1] = [0x0; 1];
+    let mut flag = true;
     loop {
-        // msg_send[0] = 0x68;
-        // msg_send[1] = (0x75 << 1) | 0x00;
-        msg_send[0] = 0x75 | 0x80;
-        // Clone the array, as it would be mutually shared in `transfer` while simultaniously would be
-        // immutable shared in `assert_eq`.
-        let mut msg_sending = msg_send.clone();
-        // Transfer the content of the array via SPI and receive it's output.
-        // When MOSI and MISO pins are connected together, `msg_received` should receive the content.
-        // from `msspi_3ending`
-        cs.set_low().unwrap();
-        let data = spi_3.transfer(&mut msg_sending).ok();
-        cs.set_high().unwrap();
-        // spi.write(& [0x75]).unwrap();
-        // let _b = spi.read().unwrap();
+        for _ in 0..10000 {
+            msg_send[0] = 0x75 | 0x80;
+            let mut msg_sending = msg_send.clone();
+            cs.set_low().unwrap();
+            let data = spi_3.transfer(&mut msg_sending).ok();
+            cs.set_high().unwrap();
+            spi_received.clone_from_slice(data.unwrap()); 
+            if spi_received[1] != 0x70 {
+                flag = false;
+            }
+        }
 
-        msg_received.clone_from_slice(data.unwrap());
+        for _ in 0..10000 {
+            i2c_2.write_read(0x68, &[0x75], &mut i2c_received).unwrap();
+            if i2c_received[0] != 0x70 {
+                flag = false;
+            }
+        }
 
         // Check, if msg_send and msg_received are identical.
         // This succeeds, when master and slave of the SPI are connected.
         // assert_eq!(msg_send, msg_received);
-        if msg_received[1] == 0x70 {
+        if flag {
             led.set_low().unwrap();
             delay.delay_ms(1000u32);
             led.set_high().unwrap();
             delay.delay_ms(1000u32);
-        }
-        else {
+        } else {
             led.set_low().unwrap();
             break;
         }
     }
 
-    loop {
-
-    }
+    loop {}
 }

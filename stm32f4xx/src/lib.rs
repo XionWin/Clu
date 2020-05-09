@@ -12,3 +12,4 @@ pub mod spi;
 pub mod i2c;
 pub mod i2cpwm;
 pub mod dual_i2c;
+pub mod spi_i2c;
