@@ -32,7 +32,7 @@ pub fn run() -> ! {
             polarity: Polarity::IdleLow,
             phase: Phase::CaptureOnFirstTransition,
         },
-        8000_000.hz(),
+        16_000_000.hz(),
         clocks,
     );
 
@@ -60,18 +60,24 @@ pub fn run() -> ! {
     let mut spi_received: [u8; 2] = [0x0; 2];
     let mut i2c_received: [u8; 1] = [0x0; 1];
     let mut flag = true;
+
     loop {
+        led.set_low().unwrap();
+
         for _ in 0..10000 {
             msg_send[0] = 0x75 | 0x80;
             let mut msg_sending = msg_send.clone();
             cs.set_low().unwrap();
             let data = spi_3.transfer(&mut msg_sending).ok();
             cs.set_high().unwrap();
-            spi_received.clone_from_slice(data.unwrap()); 
+            spi_received.clone_from_slice(data.unwrap());
             if spi_received[1] != 0x70 {
                 flag = false;
             }
         }
+        led.set_high().unwrap();
+        delay.delay_ms(1000u32);
+        led.set_low().unwrap();
 
         for _ in 0..10000 {
             i2c_2.write_read(0x68, &[0x75], &mut i2c_received).unwrap();
@@ -80,15 +86,13 @@ pub fn run() -> ! {
             }
         }
 
+        led.set_high().unwrap();
+        delay.delay_ms(1000u32);
+
         // Check, if msg_send and msg_received are identical.
         // This succeeds, when master and slave of the SPI are connected.
         // assert_eq!(msg_send, msg_received);
-        if flag {
-            led.set_low().unwrap();
-            delay.delay_ms(1000u32);
-            led.set_high().unwrap();
-            delay.delay_ms(1000u32);
-        } else {
+        if !flag {
             led.set_low().unwrap();
             break;
         }
