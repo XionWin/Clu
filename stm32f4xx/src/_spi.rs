@@ -30,7 +30,7 @@ pub fn run() -> ! {
             polarity: Polarity::IdleLow,
             phase: Phase::CaptureOnFirstTransition,
         },
-        8000_000.hz(),
+        16_000_000.hz(),
         clocks,
     );
 
