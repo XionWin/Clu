@@ -3,7 +3,6 @@ use hal::{
     spi::{Mode, Phase, Polarity, Spi},
     stm32,
 };
-use vd::bus::Bus;
 
 pub fn run() -> ! {
     let dp = stm32::Peripherals::take().unwrap();
