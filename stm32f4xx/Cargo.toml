@@ -13,6 +13,8 @@ cortex-m-rt = "*"
 panic-halt = "*"
 # panic-semihosting = "*"
 
+vdhal = { path = "../vdhal/" }
+
 [dependencies.stm32f4xx-hal]
 features = ["stm32f407", "rt"]
 version = "*"

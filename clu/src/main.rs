@@ -21,7 +21,8 @@ fn main() -> ! {
     // stm32f4xx::i2c::run();
     // stm32f4xx::i2cpwm::run();
     // stm32f4xx::dual_i2c::run();
-    stm32f4xx::spi_i2c::run();
+    // stm32f4xx::spi_i2c::run();
+    stm32f4xx::_spi::run();
 
     // stm32f4xx::led2::run();
 }
