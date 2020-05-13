@@ -12,6 +12,7 @@ cortex-m = "*"
 cortex-m-rt = "*"
 panic-halt = "*"
 # panic-semihosting = "*"
+embedded-hal = "*"
 
 vdhal = { path = "../vdhal/" }
 

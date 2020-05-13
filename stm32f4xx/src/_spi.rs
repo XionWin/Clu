@@ -43,15 +43,19 @@ pub fn run() -> ! {
     let mut cs = gpiog.pg6.into_push_pull_output();
     cs.set_high().unwrap();
 
-    let spi_3: &mut dyn vd::bus::Bus = &mut crate::spi::SPI3::default(spi_3, cs);
-
+    let spi_3: &mut dyn vd::bus::Bus = &mut crate::spi::SPI::default(spi_3, cs);
+    let mut flag = true;
     loop {
-        let value = crate::_spi::read(spi_3);
+        for _ in 0..10000 {
+            if crate::_spi::read(spi_3) != 0x70 {
+                flag = false;
+            }
+        }
 
         // Check, if msg_send and msg_received are identical.
         // This succeeds, when master and slave of the SPI are connected.
         // assert_eq!(msg_send, msg_received);
-        if value == 0x70 {
+        if flag {
             led.set_low().unwrap();
             delay.delay_ms(1000u32);
             led.set_high().unwrap();

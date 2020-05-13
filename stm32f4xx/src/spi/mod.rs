@@ -1,3 +1,3 @@
-mod spi3;
+mod spi;
 
-pub use spi3::*;
+pub use spi::*;
