@@ -9,6 +9,7 @@ pub fn run() -> ! {
     let cp = cortex_m::peripheral::Peripherals::take().unwrap();
 
     let rcc = dp.RCC.constrain();
+    let gpiob = dp.GPIOB.split();
     let gpioc = dp.GPIOC.split();
     let gpiog = dp.GPIOG.split();
 
@@ -19,12 +20,27 @@ pub fn run() -> ! {
         .pclk1(24.mhz())
         .freeze();
 
+    let _spi_2 = Spi::spi2(
+        dp.SPI2,
+        (
+            gpiob.pb10.into_alternate_af5(),
+            gpioc.pc2.into_alternate_af5(),
+            gpioc.pc3.into_alternate_af5(),
+        ),
+        Mode {
+            polarity: Polarity::IdleLow,
+            phase: Phase::CaptureOnFirstTransition,
+        },
+        16_000_000.hz(),
+        clocks,
+    );
+
     let spi_3 = Spi::spi3(
         dp.SPI3,
         (
-            gpioc.pc10.into_alternate_af6().internal_pull_up(true),
-            gpioc.pc11.into_alternate_af6().internal_pull_up(true),
-            gpioc.pc12.into_alternate_af6().internal_pull_up(true),
+            gpioc.pc10.into_alternate_af6(),
+            gpioc.pc11.into_alternate_af6(),
+            gpioc.pc12.into_alternate_af6(),
         ),
         Mode {
             polarity: Polarity::IdleLow,
@@ -60,18 +76,15 @@ pub fn run() -> ! {
             delay.delay_ms(1000u32);
             led.set_high().unwrap();
             delay.delay_ms(1000u32);
-        }
-        else {
+        } else {
             led.set_low().unwrap();
             break;
         }
     }
 
-    loop {
-
-    }
+    loop {}
 }
 
 pub fn read(spi: &mut dyn vd::bus::Bus) -> u8 {
-    spi.read_byte(0x75 | 0x80)
+    spi.read_byte(0x75)
 }

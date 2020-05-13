@@ -42,7 +42,7 @@ C: embedded_hal::digital::v2::OutputPin
     }
     fn read_byte(&mut self, address: u8) -> u8 {
         let mut buffer: [u8; 4] = [0x00; 4];
-        buffer[0] = address;
+        buffer[0] = address | 0x80;
         self.select();
         self.writer.transfer(&mut buffer).ok();
         self.deselect();
