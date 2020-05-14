@@ -9,20 +9,20 @@ extern crate panic_halt;
 
 use cortex_m_rt::entry;
 
-use stm32f407;
+use stm32f4xx;
 
 // use `main` as the entry point of this application
 #[entry]
 fn main() -> ! {
-    // stm32f407::gpio::run();
-    // stm32f407::led::run();
-    // stm32f407::pwm::run();
-    // stm32f407::spi::run();
-    // stm32f407::i2c::run();
-    // stm32f407::i2cpwm::run();
-    // stm32f407::dual_i2c::run();
-    // stm32f407::spi_i2c::run();
-    stm32f407::_spi::run();
+    // stm32f4xx::gpio::run();
+    // stm32f4xx::led::run();
+    // stm32f4xx::pwm::run();
+    // stm32f4xx::spi::run();
+    // stm32f4xx::i2c::run();
+    // stm32f4xx::i2cpwm::run();
+    // stm32f4xx::dual_i2c::run();
+    // stm32f4xx::spi_i2c::run();
+    stm32f4xx::_spi::run();
 
-    // stm32f407::led2::run();
+    // stm32f4xx::led2::run();
 }

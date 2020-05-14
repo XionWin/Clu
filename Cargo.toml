@@ -2,5 +2,5 @@
 members = [
     "clu",
     "vdhal",
-    "stm32f407"
+    "stm32f4xx"
 ]
