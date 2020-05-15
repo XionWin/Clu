@@ -12,6 +12,7 @@ cortex-m = "*"
 cortex-m-rt = "*"
 panic-halt = "*"
 embedded-hal = "*"
+nb = "*"
 
 vdhal = { path = "../vdhal/" }
 
