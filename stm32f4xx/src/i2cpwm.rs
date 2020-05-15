@@ -8,7 +8,7 @@ pub fn run() -> ! {
     let clocks = rcc
         .cfgr
         .use_hse(8.mhz()) //discovery board has 8 MHz crystal for HSE
-        .sysclk(128.mhz())
+        .sysclk(168.mhz())
         .freeze();
 
     let gpioa = dp.GPIOA.split();

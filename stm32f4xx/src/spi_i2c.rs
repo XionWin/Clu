@@ -17,7 +17,7 @@ pub fn run() -> ! {
     let clocks = rcc
         .cfgr
         .use_hse(8.mhz())
-        .sysclk(128.mhz())
+        .sysclk(168.mhz())
         .pclk1(24.mhz())
         .freeze();
 
