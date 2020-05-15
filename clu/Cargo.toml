@@ -17,7 +17,7 @@ cortex-m-semihosting = "*"
 # cortex-m-semihosting = "0.3.3"
 
 
-stm32f407 = { path = "../stm32f407/" }
+stm32f4xx = { path = "../stm32f4xx/" }
 
 
 [profile.release]
