@@ -1,5 +1,5 @@
 [package]
-name = "stm32f4xx"
+name = "stm32f407"
 version = "0.1.0"
 authors = ["win"]
 edition = "2018"

@@ -11,7 +11,7 @@ cortex-m-rt = "*"
 panic-halt = "*"
 cortex-m-semihosting = "*"
 
-stm32f4xx = { path = "../stm32f4xx/" }
+robomaster = { path = "../robomaster/" }
 
 
 [profile.release]
