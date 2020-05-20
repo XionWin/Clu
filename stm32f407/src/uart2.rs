@@ -11,10 +11,9 @@ pub fn run() -> ! {
 
     let clocks = rcc
         .cfgr
-        // .use_hse(8.mhz()) //discovery board has 8 MHz crystal for HSE
         // .pclk1(8.mhz())
         // .pclk2(8.mhz())
-        .sysclk(48.mhz())
+        .sysclk(168.mhz())
         .freeze();
 
     let gpioa = dp.GPIOA.split();
@@ -34,7 +33,7 @@ pub fn run() -> ! {
       let serial_1 = Serial::usart1(
         dp.USART1,
         (tx, rx),
-        Config::default().baudrate(9_600.bps()),
+        Config::default().baudrate(115_200.bps()),
         clocks
     )
     .unwrap();
@@ -47,15 +46,23 @@ pub fn run() -> ! {
 
     let (mut tx, mut _rx) = serial_1.split();
 
-    let sent = b"hello world! \r\n";
+    let sent = b"hello world!";
 
     // The `block!` macro makes an operation block until it finishes
     // NOTE the error type is `!`
 
+    let mut count = 0u8;
+    let max = 10u8;
     loop {
         for &b in sent {
             block!(tx.write(b)).ok();
         }
+        block!(tx.write(48 + count)).ok();
+        count += 1;
+        count %= max;
+        block!(tx.write(b'\r')).ok();
+        block!(tx.write(b'\n')).ok();
+
         led.set_low().unwrap();
         delay.delay_ms(100u32);
         led.set_high().unwrap();
