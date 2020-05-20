@@ -18,5 +18,6 @@ pub mod dual_i2c;
 pub mod spi_i2c;
 
 pub mod uart;
+pub mod uart2;
 
 pub mod _spi;

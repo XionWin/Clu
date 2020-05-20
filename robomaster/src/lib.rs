@@ -13,6 +13,7 @@ pub fn run() -> ! {
     // stm32f407::_spi::run();
     // stm32f407::uart::run();
 
-    stm32f407::led2::run();
+    // stm32f407::led2::run();
+    stm32f407::uart2::run();
 
 }
